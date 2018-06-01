@@ -1,0 +1,105 @@
+﻿@model IEnumerable<BlueRibbonsReview.ViewModels.AdminViewModel>
+
+@{
+    ViewBag.Title = "Users";
+    ViewBag.Tagline = "";
+}
+
+@*<h2>BlueRibbonsUsers</h2>*@
+
+<div class="form-group form-inline">
+    <div class="filterArea">
+        <div class="searchBar">
+            @using (Html.BeginForm("Index", "Admin"))
+            {
+                @Html.TextBox("SearchString", null, new { @class = "form-control", @placeholder = "Narrow results by name", id = "adminSearch" })
+                <button type="submit" id="searchButton"><span class="glyphicon glyphicon-search"></span></button>
+            }
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        
+        <th>
+            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.LastNameSortParm })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.UserRoleName).ToString(), "Index", new { sortOrder = ViewBag.UserRoleSortParm })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.JoinDate).ToString(), "Index", new { sortOrder = ViewBag.JoinDateSortParm })
+        </th>
+
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.CampaignCount).ToString(), "Index", new { sortOrder = ViewBag.CampaignCountSortParm })
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.ReferralCount).ToString(), "Index", new { sortOrder = ViewBag.ReferralCountSortParm })
+        </th>
+
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @{
+            string fullName = item.FirstName + " " + item.LastName;
+            @Html.Raw(fullName)
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserRoleName)
+        </td>
+        <td>
+           @DateTime.Parse(Html.DisplayFor(Model => item.JoinDate).ToString()).ToShortDateString()
+        </td>
+        <td>
+        
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary">@Html.DisplayFor(modelItem => item.CampaignCount)</button>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+
+                    @*foreach user create link to all campaigns they have made in the dropdown.*@
+                    @{ 
+                        foreach(var campaign in item.Campaigns)
+                        {
+                            <li>@Html.DisplayFor(modelItem => campaign.Name)</li>
+                 
+                        }
+                    }
+
+                </ul>
+            </div>
+        
+
+        
+
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReferralCount)
+        </td>
+
+        <td>
+            @Html.ActionLink(" ", "Edit", new { id = item.UserID }, new { @class = "fa fa-pencil-square-o fa-lg" }) |
+            @Html.ActionLink(" ", "Delete", new { id = item.UserID }, new { @class = "far fa-trash-alt fa-lg" })
+        </td>
+    </tr>
+                    }
+
+</table>
+
+@Html.ActionLink("Export Emails to Csv", "ExportEmailListToCSV")
