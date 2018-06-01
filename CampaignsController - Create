@@ -1,0 +1,38 @@
+        // POST: Campaigns/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "CampaignID,ASIN,Name,ImageUrL,Description,RetailPrice,SalePrice,StartDate,CloseDate,ExpireDate,VendorsPurchaseInstructions")] Campaign campaign)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    campaign.VendorsPurchaseURL = String.Format("https://www.amazon.com/dp/{0}", campaign.ASIN);
+                    campaign.OpenCampaign = false;
+                    string userId = User.Identity.GetUserId();
+                    campaign.UserID = User.Identity.GetUserId();
+                    campaign.ApplicationUser = db.Users.Single(u => u.Id == userId);
+
+                    var message = new MailMessage();
+                    message.To.Add("support@bewander.com");
+                    var currentUserName = User.Identity.GetUserName();
+                    message.From = new MailAddress(currentUserName);
+                    message.Subject = "A new Campaign has been created!";
+                    var body = "<p>Hey Alex!</p><p>A new campaign has been created by {0} {1} for {2} that needs to be pushed live. Please reach out to {0} and find out the item count and coupon code and obtain payment from them before moving forward and pushing the campaign live on the site.";
+                    message.Body = string.Format(body, campaign.ApplicationUser.FirstName, campaign.ApplicationUser.LastName, campaign.Name);
+                    message.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.EnableSsl = true;
+                    smtp.Credentials = new System.Net.NetworkCredential("EMAIL@EMAIL.COM", PASSWORD");
+                    smtp.Port = 587;
+                    smtp.Send(message);
+
+                    db.Campaigns.Add(campaign);
+                    db.SaveChanges();
+                    return RedirectToAction("Sent");
+
+                }
+            }
