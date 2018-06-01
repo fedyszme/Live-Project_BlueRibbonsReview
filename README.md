@@ -7,3 +7,6 @@ I worked with the Admin Controller, AdminViewModel, and Views. I created the log
 
 I created a link in the Admin Index View that creates a CSV file with the emails of the users. This utilized StringWrither to do so.
 
+I added the functionality to the CampaignsController - Create, that when the form is submitted, it also sends an email to the support team letting them know that their is a new item for them to review.
+
+I adjusted the Reviews Index page to use the data from the AnalyticsViewModel and made it so that it displayed a list of the products and their average review rating, and then when the product is chosen, it drops down the individual reviews of that product.
