@@ -1,0 +1,87 @@
+﻿@model IEnumerable<BlueRibbonsReview.ViewModels.AnalyticsViewModel>
+
+@{
+    ViewBag.Tagline = "";
+}
+
+
+
+<p>
+    <a href="@Url.Action("Create", "Reviews")"><span class="fas fa-edit fa-lg"></span>Write a Review</a>
+</p>
+
+
+<div id="accordion">
+    @foreach (var item in Model)
+    {
+        <div>
+            <img class="imgThumb" src="@item.Campaign.ImageUrL" alt="@item.Campaign.Name" /> | @Html.DisplayFor(modelItem => item.Campaign.Name) |
+            @for (int i = 0; i < item.ReviewAverage; i++)
+            {
+                <!--Could not find the source for the stars so I could not remove the pointer effect on hover. this is due to the star-rating__ico -->
+                <div class="star-rating__wrap ">
+                    <span style="cursor:default" class="star-rating__ico fa fa-star fa-lg" title="@item.ReviewAverage out of 5 stars" value: @item.ReviewAverage></span>
+                </div>
+            }
+        </div>
+
+        <div>
+            <ul style="list-style-type:none">
+                @foreach (var review in item.Campaign.Reviews)
+                {
+                    <li>
+                        @Html.LabelFor(p => review.ReviewDate): @Html.DisplayFor(p => review.ReviewDate) |
+                        @Html.LabelFor(p => review.ProductRating):
+                        @for (int i = 0; i < item.ReviewAverage; i++)
+                        {
+                            <!--Could not find the source for the stars so I could not remove the pointer effect on hover. this is due to the star-rating__ico -->
+                            <div class="star-rating__wrap ">
+                                <span style="cursor:default" class="star-rating__ico fa fa-star fa-lg" title="@review.ProductRating out of 5 stars" value: @review.ProductRating></span>
+                            </div>
+                        }
+                        | @Html.LabelFor(p => review.ReviewDetails): @Html.DisplayFor(p => review.ReviewDetails)
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
